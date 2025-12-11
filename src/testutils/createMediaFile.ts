@@ -1,10 +1,10 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { CaaSApi_Media_File } from '../types'
 import { createDataEntry } from './createDataEntry'
 
 export const createMediaFile = (): CaaSApi_Media_File => {
   const base = createDataEntry()
-  const name = faker.random.word()
+  const name = faker.lorem.word()
   return {
     ...base,
     fsType: 'Media',

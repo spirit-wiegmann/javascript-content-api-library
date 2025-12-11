@@ -5,15 +5,15 @@ import { CaasItemFilterParams, Dataset, FSXAContentMode, FSXAProxyApi, LogLevel 
 import { default as expressIntegration } from '../src/integrations/express'
 import { FSXARemoteApi } from '../src/modules/FSXARemoteApi'
 import { ComparisonQueryOperatorEnum, LogicalQueryOperatorEnum } from '../src/modules/QueryBuilder'
-import { CaasTestingClient } from './utils'
+import { CaasTestingClient, closeServer } from './utils'
 import { Server } from 'http'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { createDataset, createDatasetReference } from '../src/testutils'
 import { MapResponse } from '../src/modules'
 
 dotenv.config({ path: './integrationtests/.env' })
 
-const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS } = process.env
+const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS, INTEGRATION_TEST_TENANT_ID } = process.env
 
 // promisify server start so we can await it in jest
 const startSever = (app: Express) =>
@@ -24,8 +24,8 @@ const startSever = (app: Express) =>
   })
 
 describe('Access Control', () => {
-  const randomProjectID = Faker.datatype.uuid()
-  const tenantID = 'fsxa-api-integration-test'
+  const randomProjectID = faker.string.uuid()
+  const tenantID = INTEGRATION_TEST_TENANT_ID || 'fsxa-api-integration-test'
 
   const remoteApiBaseConfig = {
     apikey: INTEGRATION_TEST_API_KEY!,
@@ -66,7 +66,7 @@ describe('Access Control', () => {
     const res = await caasClient.getCollection()
     const parsedRes = await res.json()
     await caasClient.removeCollection(parsedRes._etag.$oid)
-    server.close()
+    await closeServer(server)
   })
 
   it('caas items filter filters data', async () => {

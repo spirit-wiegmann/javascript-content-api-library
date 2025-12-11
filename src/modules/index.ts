@@ -9,4 +9,5 @@ export * from './Logger'
 export * from './FSXAProxyApi'
 export * from './FSXARemoteApi'
 export * from './FSXAApiSingleton'
-export * from './CaaSEventStream'
+// CaaSEventStream uses lazy loading to prevent better-sse from being bundled in browser builds
+export { CaaSEventStream } from './CaaSEventStreamLazy'

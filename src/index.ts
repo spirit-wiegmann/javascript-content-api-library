@@ -11,6 +11,7 @@ export {
   FSXAApiSingleton,
   FSXARemoteApi,
   Logger,
+  CaaSEventStream,
 } from './modules'
 export * from './enums'
 export * from './types'

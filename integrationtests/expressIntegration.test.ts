@@ -2,9 +2,9 @@ import dotenv from 'dotenv'
 import express, { Express } from 'express'
 import cors from 'cors'
 import { Server } from 'http'
-import { CaasTestingClient } from './utils'
+import { CaasTestingClient, closeServer } from './utils'
 import { FSXAApiErrors, FSXAContentMode, FSXARemoteApi, LogLevel } from '../src'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import expressIntegration from '../src/integrations/express'
 import {
   createDataset,
@@ -23,6 +23,7 @@ const {
   INTEGRATION_TEST_API_KEY,
   INTEGRATION_TEST_CAAS,
   INTEGRATION_TEST_NAVIGATION_SERVICE,
+  INTEGRATION_TEST_TENANT_ID,
 } = process.env
 const PORT = 3002
 const UNAUTHORIZED_PORT = 3333
@@ -35,8 +36,8 @@ const startSever = (app: Express, port: number) =>
   })
 
 describe('express integration', () => {
-  const randomProjectID = Faker.datatype.uuid()
-  const tenantID = 'fsxa-api-integration-test'
+  const randomProjectID = faker.string.uuid()
+  const tenantID = INTEGRATION_TEST_TENANT_ID || 'fsxa-api-integration-test'
 
   const locale = {
     identifier: 'de_DE',
@@ -106,8 +107,8 @@ describe('express integration', () => {
 
   afterAll(async () => {
     await clearCaasCollection()
-    server.close()
-    unauthorizedServer.close()
+    await closeServer(server)
+    await closeServer(unauthorizedServer)
   })
   describe('error handling', () => {
     describe('fetch element route', () => {

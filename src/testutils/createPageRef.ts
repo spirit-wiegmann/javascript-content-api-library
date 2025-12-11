@@ -1,4 +1,4 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { createDataEntry } from './createDataEntry'
 import { CaaSApi_Body, CaaSApi_PageRef } from '../types'
 
@@ -25,6 +25,6 @@ export function createPageRef(
         fsType: 'PageTemplate',
       },
     },
-    route: `/${faker.random.word()}/${faker.random.word()}/`,
+    route: `/${faker.lorem.word()}/${faker.lorem.word()}/`,
   }
 }

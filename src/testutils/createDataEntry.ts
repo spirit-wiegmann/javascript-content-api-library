@@ -1,4 +1,4 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { CaaSApi_CMSInputPermission } from '..'
 import {
   CaaSApi_FSReference,
@@ -8,8 +8,8 @@ import {
 } from '../types'
 
 export function createDataEntry(
-  id = faker.datatype.uuid(),
-  locale = faker.random.locale()
+  id = faker.string.uuid(),
+  locale = faker.location.countryCode().toLowerCase()
 ) {
   return {
     _id: `${id}.${locale}`,
@@ -25,12 +25,12 @@ export function createDataEntry(
 }
 
 export function createMediaPictureReferenceValue(
-  id = faker.datatype.uuid(),
+  id = faker.string.uuid(),
   remoteProject?: string
 ): CaaSApi_MediaRef {
   return {
     fsType: 'Media',
-    name: faker.random.word(),
+    name: faker.lorem.word(),
     identifier: id,
     uid: id,
     uidType: 'MEDIASTORE_LEAF',
@@ -41,12 +41,12 @@ export function createMediaPictureReferenceValue(
 }
 
 export function createMediaPictureReference(
-  id = faker.datatype.uuid(),
+  id = faker.string.uuid(),
   remoteProject?: string
 ): CaaSApi_FSReference {
   return {
     fsType: 'FS_REFERENCE',
-    name: faker.random.word(),
+    name: faker.lorem.word(),
     value: createMediaPictureReferenceValue(id, remoteProject),
   }
 }
@@ -56,14 +56,14 @@ export function mockPermissionActivity(
   forbidden: CaaSAPI_PermissionGroup[]
 ): CaaSAPI_PermissionActivity {
   return {
-    activity: faker.random.word(),
+    activity: faker.lorem.word(),
     allowed,
     forbidden,
   }
 }
 
 export const mockPermissionGroup = (): CaaSAPI_PermissionGroup => {
-  const groupId = faker.random.word()
+  const groupId = faker.lorem.word()
   return {
     groupName: `${groupId}-name`,
     groupPath: `/GroupsFile/${groupId}`,

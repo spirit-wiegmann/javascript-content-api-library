@@ -1,24 +1,24 @@
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { FSXAContentMode } from '../enums'
 import { LogLevel } from '../modules'
 
 export const generateRandomConfig = () => {
-  const API_KEY = Faker.datatype.uuid()
-  const CAAS_URL = Faker.internet.url()
-  const NAVIGATION_SERVICE_URL = Faker.internet.url()
-  const TENANT_ID = Faker.internet.domainWord()
-  const PROJECT_ID = Faker.datatype.uuid()
-  const CONTENT_MODE: FSXAContentMode = Faker.datatype.boolean()
+  const API_KEY = faker.string.uuid()
+  const CAAS_URL = faker.internet.url()
+  const NAVIGATION_SERVICE_URL = faker.internet.url()
+  const TENANT_ID = faker.internet.domainWord()
+  const PROJECT_ID = faker.string.uuid()
+  const CONTENT_MODE: FSXAContentMode = faker.datatype.boolean()
     ? FSXAContentMode.PREVIEW
     : FSXAContentMode.RELEASE
   const REMOTES = {
     remote: {
-      id: Faker.datatype.uuid(),
-      locale: `${Faker.locale}_${Faker.locale.toUpperCase()}`,
+      id: faker.string.uuid(),
+      locale: `${faker.location.countryCode().toLowerCase()}_${faker.location.countryCode().toLowerCase().toUpperCase()}`,
     },
     secondRemote: {
-      id: Faker.datatype.uuid(),
-      locale: `${Faker.locale}_${Faker.locale.toUpperCase()}`,
+      id: faker.string.uuid(),
+      locale: `${faker.location.countryCode().toLowerCase()}_${faker.location.countryCode().toLowerCase().toUpperCase()}`,
     },
   }
 

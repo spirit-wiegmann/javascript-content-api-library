@@ -12,9 +12,9 @@ import {
 } from '../src'
 import { default as expressIntegration } from '../src/integrations/express'
 import { FSXARemoteApi } from '../src/modules/FSXARemoteApi'
-import { CaasTestingClient } from './utils'
+import { CaasTestingClient, closeServer } from './utils'
 import { Server } from 'http'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import {
   createDataset,
   createDatasetReference,
@@ -26,7 +26,7 @@ import {
 
 dotenv.config({ path: './integrationtests/.env' })
 
-const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS } = process.env
+const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS, INTEGRATION_TEST_TENANT_ID } = process.env
 
 // promisify server start so we can await it in jest
 const startSever = (app: Express) =>
@@ -37,14 +37,14 @@ const startSever = (app: Express) =>
   })
 
 describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
-  const randomId1 = Faker.datatype.uuid()
+  const randomId1 = faker.string.uuid()
   const projectLocale = {
     identifier: 'de_DE',
     country: 'DE',
     language: 'de',
   }
-  const tenantID = 'fsxa-api-integration-test'
-  const randomId2 = Faker.datatype.uuid()
+  const tenantID = INTEGRATION_TEST_TENANT_ID || 'fsxa-api-integration-test'
+  const randomId2 = faker.string.uuid()
 
   let proxyAPI: FSXAProxyApi
   let server: Server
@@ -73,6 +73,7 @@ describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
       },
       logLevel: LogLevel.INFO,
       enableEventStream: false,
+      maxReferenceDepth: 10,
     })
 
     const app = express()
@@ -103,9 +104,9 @@ describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
     remoteProjectLocale: string,
     differentMediaIds: boolean
   ) {
-    const mediaId = Faker.datatype.uuid()
+    const mediaId = faker.string.uuid()
 
-    const remoteMediaId = differentMediaIds ? Faker.datatype.uuid() : mediaId
+    const remoteMediaId = differentMediaIds ? faker.string.uuid() : mediaId
 
     localMedia = createMediaPicture(mediaId, 'de_DE')
     localMedia.description = 'local media'
@@ -122,7 +123,7 @@ describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
     )
 
     // create dataset
-    const datasetId = Faker.datatype.uuid()
+    const datasetId = faker.string.uuid()
     dataset = createDataset(datasetId)
     const datasetReference = createDatasetReference(datasetId)
     remoteMedia.metaFormData = {
@@ -160,7 +161,7 @@ describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
         await caasClient.removeRemoteCollection(parsedRes2._etag.$oid)
       }
     } finally {
-      server.close()
+      await closeServer(server)
     }
   })
 

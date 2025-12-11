@@ -26,8 +26,7 @@ import {
   FetchResponse,
 } from '../types'
 import { FSXAContentMode } from '../enums'
-import Faker from 'faker'
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { createDataset } from '../testutils'
 import { PARAM_VALIDATION_ERROR_TO_MESSAGE } from './endpointIntegrationWrapper'
 
@@ -53,12 +52,12 @@ describe('Express-Integration', () => {
     idMap: {},
     seoRouteMap: {},
     structure: [],
-    pages: { index: faker.random.word() },
+    pages: { index: faker.lorem.word() },
     meta: {
       identifier: {
-        tenantId: faker.random.word(),
-        languageId: faker.random.word(),
-        navigationId: faker.random.word(),
+        tenantId: faker.lorem.word(),
+        languageId: faker.lorem.word(),
+        navigationId: faker.lorem.word(),
       },
     },
   }
@@ -199,7 +198,6 @@ describe('Express-Integration', () => {
         initialPath: '/foobar',
         locale: 'de_DE',
       })
-      const json = Faker.datatype.json()
       await proxyApi.fetchNavigation({ initialPath: '/', locale: 'de_DE' })
       expect(fetchNavigationSpy).toHaveBeenCalledTimes(4)
       expect(fetchNavigationSpy).toHaveBeenCalledWith({

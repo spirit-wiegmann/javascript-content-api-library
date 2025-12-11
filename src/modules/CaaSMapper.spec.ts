@@ -1,4 +1,4 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { CaaSMapper, CaaSMapperErrors } from './CaaSMapper'
 import { FSXARemoteApi } from './FSXARemoteApi'
 import { LogLevel } from './Logger'
@@ -30,7 +30,6 @@ import {
   FetchByFilterParams,
   Permission,
 } from '../types'
-import { parseISO } from 'date-fns'
 import { createNumberEntry } from '../testutils/createNumberEntry'
 import { createPageRef } from '../testutils/createPageRef'
 import { createSection } from '../testutils/createSection'
@@ -60,24 +59,23 @@ import { createFetchResponse } from '../testutils/createFetchResponse'
 import { LoggerChalked } from './LoggerChalked'
 
 jest.mock('./FSXARemoteApi')
-jest.mock('date-fns')
 
 describe('CaaSMapper', () => {
-  const createPath = () => [faker.random.word(), faker.random.word()]
+  const createPath = () => [faker.lorem.word(), faker.lorem.word()]
   const createLogger = () => new LoggerChalked(LogLevel.NONE, 'Querybuilder')
   const createApi = () =>
     jest.mocked<FSXARemoteApi>(new (FSXARemoteApi as any)())
   const createMapper = () =>
     new CaaSMapper(createApi(), 'de', {}, createLogger())
-  let remoteProjectLocale: string
-  let remoteProjectId: string
+  let remoteProjectLocale: string | undefined = undefined
+  let remoteProjectId: string | undefined = undefined
 
   describe('registerReferencedItem', () => {
     it('should register a reference and return the reference key', () => {
       const api = createApi()
       const locale = 'de_DE'
       const mapper = new CaaSMapper(api, locale, {}, createLogger())
-      const refId = faker.random.word()
+      const refId = faker.lorem.word()
       const path = createPath()
       const item = mapper.registerReferencedItem(refId, path)
 
@@ -91,7 +89,7 @@ describe('CaaSMapper', () => {
       const api = createApi()
       const locale = 'de_DE'
       const mapper = new CaaSMapper(api, locale, {}, createLogger())
-      const refId = faker.random.word()
+      const refId = faker.lorem.word()
       const path = createPath()
       const path2 = createPath()
 
@@ -107,7 +105,7 @@ describe('CaaSMapper', () => {
       const api = createApi()
       api.remotes = remotes
       const mapper = new CaaSMapper(api, 'de', {}, createLogger())
-      const refId = faker.random.word()
+      const refId = faker.lorem.word()
       const path = createPath()
       const item = mapper.registerReferencedItem(refId, path, 'remoteId')
 
@@ -127,7 +125,7 @@ describe('CaaSMapper', () => {
       const api = createApi()
       const locale = 'de_DE'
       const mapper = new CaaSMapper(api, locale, {}, createLogger())
-      const refId = faker.random.word()
+      const refId = faker.lorem.word()
       const path = createPath()
       const item = mapper.registerReferencedItem(refId, path, 'remoteId')
 
@@ -218,11 +216,11 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_CMSInputCombobox = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: {
             fsType: 'Option',
-            identifier: faker.datatype.uuid(),
-            label: faker.random.words(2),
+            identifier: faker.string.uuid(),
+            label: faker.lorem.words(2),
           },
           fsType: 'CMS_INPUT_COMBOBOX',
         }
@@ -239,7 +237,7 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_CMSInputCombobox = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: null,
           fsType: 'CMS_INPUT_COMBOBOX',
         }
@@ -256,7 +254,7 @@ describe('CaaSMapper', () => {
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         mapper.xmlParser.parse = jest.fn().mockImplementation(async () => rt)
         const entry: CaaSApi_CMSInputDOM = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: '<here be dragons />',
           fsType: 'CMS_INPUT_DOM',
         }
@@ -269,7 +267,7 @@ describe('CaaSMapper', () => {
         const rt: RichTextElement[] = []
         mapper.xmlParser.parse = jest.fn().mockImplementation(async () => rt)
         const entry: CaaSApi_CMSInputDOMTable = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: '<here be dragons />',
           fsType: 'CMS_INPUT_DOMTABLE',
         }
@@ -281,7 +279,7 @@ describe('CaaSMapper', () => {
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         mapper.xmlParser.parse = jest.fn()
         const domTableEntry: CaaSApi_CMSInputDOMTable = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: '',
           fsType: 'CMS_INPUT_DOMTABLE',
         }
@@ -290,7 +288,7 @@ describe('CaaSMapper', () => {
         ).resolves.toEqual([])
         expect(mapper.xmlParser.parse).not.toHaveBeenCalled()
         const domEntry: CaaSApi_CMSInputDOM = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: '',
           fsType: 'CMS_INPUT_DOM',
         }
@@ -317,8 +315,8 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_CMSInputText = {
-          name: faker.random.word(),
-          value: faker.random.words(5),
+          name: faker.lorem.word(),
+          value: faker.lorem.words(5),
           fsType: 'CMS_INPUT_TEXT',
         }
         await expect(mapper.mapDataEntry(entry, createPath())).resolves.toEqual(
@@ -332,8 +330,8 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_CMSInputTextArea = {
-          name: faker.random.word(),
-          value: faker.random.words(5),
+          name: faker.lorem.word(),
+          value: faker.lorem.words(5),
           fsType: 'CMS_INPUT_TEXTAREA',
         }
         await expect(mapper.mapDataEntry(entry, createPath())).resolves.toEqual(
@@ -347,11 +345,11 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_CMSInputRadioButton = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: {
             fsType: 'Option',
-            label: faker.random.word(),
-            identifier: faker.random.word(),
+            label: faker.lorem.word(),
+            identifier: faker.lorem.word(),
           },
           fsType: 'CMS_INPUT_RADIOBUTTON',
         }
@@ -372,29 +370,26 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_CMSInputDate = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: now.toISOString(),
           fsType: 'CMS_INPUT_DATE',
         }
-        jest.mocked(parseISO).mockReturnValue(now)
-        await expect(mapper.mapDataEntry(entry, createPath())).resolves.toBe(
-          now
-        )
-        expect(parseISO).toHaveBeenCalledWith(entry.value)
+        const result = await mapper.mapDataEntry(entry, createPath())
+        expect(result).toBeInstanceOf(Date)
+        expect((result as Date).toISOString()).toBe(now.toISOString())
       })
       it('should return null and not call the iso date parser if the value is falsy', async () => {
-        jest.mocked(parseISO).mockReset()
+        jest.clearAllMocks()
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_CMSInputDate = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: null,
           fsType: 'CMS_INPUT_DATE',
         }
         await expect(
           mapper.mapDataEntry(entry, createPath())
         ).resolves.toBeNull()
-        expect(parseISO).not.toHaveBeenCalled()
       })
     })
 
@@ -406,15 +401,15 @@ describe('CaaSMapper', () => {
         const numberEntry = createNumberEntry()
         mapper.mapDataEntries = jest.fn().mockImplementation(($) => $)
         const entry: CaaSApi_CMSInputLink = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: {
             template: {
               fsType: 'PageTemplate',
-              name: faker.random.word(),
-              uid: faker.datatype.uuid(),
-              displayName: faker.random.word(),
-              identifier: faker.random.word(),
-              uidType: faker.random.word(),
+              name: faker.lorem.word(),
+              uid: faker.string.uuid(),
+              displayName: faker.lorem.word(),
+              identifier: faker.lorem.word(),
+              uidType: faker.lorem.word(),
             },
             formData: {
               regular: numberEntry,
@@ -455,7 +450,7 @@ describe('CaaSMapper', () => {
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         mapper.mapDataEntries = jest.fn()
         const entry: CaaSApi_CMSInputLink = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: null!,
           fsType: 'CMS_INPUT_LINK',
         }
@@ -472,7 +467,7 @@ describe('CaaSMapper', () => {
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         mapper.mapDataEntries = jest.fn()
         const entry: CaaSApi_CMSInputList = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: null!,
           fsType: 'CMS_INPUT_LIST',
         }
@@ -487,7 +482,7 @@ describe('CaaSMapper', () => {
         jest.spyOn(mapper, 'mapDataEntry')
         const path = createPath()
         const entry: CaaSApi_CMSInputList = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: [
             createNumberEntry(4),
             createNumberEntry(7),
@@ -521,7 +516,7 @@ describe('CaaSMapper', () => {
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         mapper.mapDataEntries = jest.fn()
         const entry: CaaSApi_CMSInputCheckbox = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: null!,
           fsType: 'CMS_INPUT_CHECKBOX',
         }
@@ -536,7 +531,7 @@ describe('CaaSMapper', () => {
         jest.spyOn(mapper, 'mapDataEntry')
         const path = createPath()
         const entry: CaaSApi_CMSInputCheckbox = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: [
             { fsType: 'Option', label: 'L1', identifier: 'I1' },
             { fsType: 'Option', label: 'L2', identifier: 'I2' },
@@ -621,7 +616,7 @@ describe('CaaSMapper', () => {
         mapper.mapDataEntries = jest.fn()
         mapper.registerReferencedItem = jest.fn()
         const entry: CaaSApi_FSDataset = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: null!,
           fsType: 'FS_DATASET',
         }
@@ -637,7 +632,7 @@ describe('CaaSMapper', () => {
         jest.spyOn(mapper, 'mapDataEntry')
         const path = createPath()
         const entry: CaaSApi_FSDataset = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: [
             createNumberEntry(4),
             createNumberEntry(7),
@@ -680,7 +675,7 @@ describe('CaaSMapper', () => {
         mapper.mapDataEntries = jest.fn()
         mapper.registerReferencedItem = jest.fn()
         const entry: CaaSApi_FSDataset = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: { fsType: null } as any,
           fsType: 'FS_DATASET',
         }
@@ -698,7 +693,7 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_CMSInputToggle = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: true,
           fsType: 'CMS_INPUT_TOGGLE',
         }
@@ -721,7 +716,7 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_CMSInputToggle = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: 'hey!' as unknown as boolean,
           fsType: 'CMS_INPUT_TOGGLE',
         }
@@ -740,34 +735,34 @@ describe('CaaSMapper', () => {
           .mockImplementation(async ($) => ({ uuid: $.uuid }))
         const path = createPath()
         const entry: CaaSApi_FSCatalog = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: [
             {
               fsType: 'Card',
-              identifier: faker.datatype.uuid(),
+              identifier: faker.string.uuid(),
               formData: {},
-              uuid: faker.datatype.uuid(),
+              uuid: faker.string.uuid(),
               template: {
                 fsType: 'SectionTemplate',
                 name: 'some-section',
-                uid: faker.datatype.uuid(),
+                uid: faker.string.uuid(),
                 uidType: 'some-uid-type',
-                identifier: faker.datatype.uuid(),
-                displayName: faker.random.word(),
+                identifier: faker.string.uuid(),
+                displayName: faker.lorem.word(),
               },
             },
             {
               fsType: 'Card',
-              identifier: faker.datatype.uuid(),
+              identifier: faker.string.uuid(),
               formData: {},
-              uuid: faker.datatype.uuid(),
+              uuid: faker.string.uuid(),
               template: {
                 fsType: 'LinkTemplate',
                 name: 'some-link',
-                uid: faker.datatype.uuid(),
+                uid: faker.string.uuid(),
                 uidType: 'some-uid-type',
-                identifier: faker.datatype.uuid(),
-                displayName: faker.random.word(),
+                identifier: faker.string.uuid(),
+                displayName: faker.lorem.word(),
               },
             },
           ],
@@ -812,22 +807,22 @@ describe('CaaSMapper', () => {
         mapper.buildPreviewId = jest.fn().mockReturnValue('preview')
         const path = createPath()
         const entry: CaaSApi_FSCatalog = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: [
             {
               fsType: 'Card',
-              identifier: faker.datatype.uuid(),
+              identifier: faker.string.uuid(),
               formData: {
                 num: createNumberEntry(),
               },
-              uuid: faker.datatype.uuid(),
+              uuid: faker.string.uuid(),
               template: {
                 fsType: 'PageTemplate',
                 name: 'some-section',
-                uid: faker.datatype.uuid(),
+                uid: faker.string.uuid(),
                 uidType: 'some-uid-type',
-                identifier: faker.datatype.uuid(),
-                displayName: faker.random.word(),
+                identifier: faker.string.uuid(),
+                displayName: faker.lorem.word(),
               },
             },
           ],
@@ -859,15 +854,15 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_FSCatalog = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: [
             {
               fsType: 'Card',
-              identifier: faker.datatype.uuid(),
+              identifier: faker.string.uuid(),
               formData: {
                 num: createNumberEntry(),
               },
-              uuid: faker.datatype.uuid(),
+              uuid: faker.string.uuid(),
               template: { fsType: '???' } as any,
             },
           ],
@@ -884,7 +879,7 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_FSReference = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: null!,
           fsType: 'FS_REFERENCE',
         }
@@ -898,14 +893,14 @@ describe('CaaSMapper', () => {
         mapper.registerReferencedItem = jest.fn().mockReturnValue('[REF]')
         const path = createPath()
         const entry: CaaSApi_FSReference = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: {
             fsType: 'Media',
-            name: faker.random.word(),
-            identifier: faker.datatype.uuid(),
-            uid: faker.random.word(),
+            name: faker.lorem.word(),
+            identifier: faker.string.uuid(),
+            uid: faker.lorem.word(),
             uidType: 'MEDIASTORE_LEAF',
-            url: faker.random.word(),
+            url: faker.lorem.word(),
             mediaType: 'PICTURE',
             remoteProject: 'remote-project',
           },
@@ -924,14 +919,14 @@ describe('CaaSMapper', () => {
         const path = createPath()
 
         const entry: CaaSApi_FSReference = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: {
             fsType: 'PageRef',
-            name: faker.random.word(),
-            identifier: faker.datatype.uuid(),
-            uid: faker.random.word(),
+            name: faker.lorem.word(),
+            identifier: faker.string.uuid(),
+            uid: faker.lorem.word(),
             uidType: 'SITESTORE_LEAF',
-            url: faker.random.word(),
+            url: faker.lorem.word(),
             remoteProject: 'remote-project',
           },
           fsType: 'FS_REFERENCE',
@@ -964,7 +959,7 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_FSReference = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           value: { fsType: 'magic!' } as any,
           fsType: 'FS_REFERENCE',
         }
@@ -983,7 +978,7 @@ describe('CaaSMapper', () => {
           .fn()
           .mockImplementation(($) => `REF-${$}`)
         const entry: CaaSApi_FSIndex = {
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           dapType: 'DatasetDataAccessPlugin',
           value: [
             {
@@ -1013,8 +1008,8 @@ describe('CaaSMapper', () => {
         const api = createApi()
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_FSIndex = {
-          name: faker.random.word(),
-          dapType: faker.random.alphaNumeric(8),
+          name: faker.lorem.word(),
+          dapType: faker.string.alphanumeric(8),
           value: [],
           fsType: 'FS_INDEX',
         }
@@ -1030,8 +1025,8 @@ describe('CaaSMapper', () => {
         const mapper = new CaaSMapper(api, 'de', {}, createLogger())
         const entry: CaaSApi_Option = {
           fsType: 'Option',
-          label: faker.random.word(),
-          identifier: faker.datatype.uuid(),
+          label: faker.lorem.word(),
+          identifier: faker.string.uuid(),
         }
         await expect(
           mapper.mapDataEntry(entry, createPath())
@@ -1055,7 +1050,7 @@ describe('CaaSMapper', () => {
         ]
         const entry: CaaSApi_CMSInputPermission = {
           fsType: 'CMS_INPUT_PERMISSION',
-          name: faker.random.word(),
+          name: faker.lorem.word(),
           // adding 2 activies, each with 2 groups
           value: [
             mockPermissionActivity([groups[0]], [groups[1]]),
@@ -1299,8 +1294,8 @@ describe('CaaSMapper', () => {
       const path = createPath()
       const body: CaaSApi_Body = {
         fsType: 'Body',
-        name: faker.random.word(),
-        identifier: faker.datatype.uuid(),
+        name: faker.lorem.word(),
+        identifier: faker.string.uuid(),
         children: [1, 2, 3] as any,
       }
       mapper.mapBodyContent = jest

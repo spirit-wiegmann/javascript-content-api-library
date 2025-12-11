@@ -2,7 +2,7 @@ import { ComparisonQueryOperatorEnum } from './QueryBuilder'
 import { FetchResponse, QueryBuilderQuery, SortParams } from './../types'
 import { FSXAApiErrors, FSXAProxyRoutes, HttpStatus } from '../enums'
 import { FSXAProxyApi } from './FSXAProxyApi'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { LogLevel } from '.'
 import 'jest-fetch-mock'
 require('jest-fetch-mock').enableFetchMocks()
@@ -12,8 +12,8 @@ describe('FSXAProxyAPI', () => {
   let locale: string
   beforeEach(() => {
     fetchMock.resetMocks()
-    id = Faker.datatype.uuid()
-    locale = `${Faker.locale}_${Faker.locale.toUpperCase()}`
+    id = faker.string.uuid()
+    locale = `${faker.location.countryCode().toLowerCase()}_${faker.location.countryCode().toLowerCase().toUpperCase()}`
   })
   describe('The initialization', () => {
     it('should throw an error if the BASEURL is empty', () => {
@@ -27,7 +27,7 @@ describe('FSXAProxyAPI', () => {
       }).toThrow(FSXAApiErrors.MISSING_BASE_URL)
     })
     it('should get initialized correctly', () => {
-      const baseURL = Faker.internet.url()
+      const baseURL = faker.internet.url()
       const proxyApi = new FSXAProxyApi(baseURL, LogLevel.NONE)
       expect(proxyApi).not.toBeNull()
       expect(proxyApi.baseUrl).toBe(baseURL)
@@ -41,7 +41,7 @@ describe('FSXAProxyAPI', () => {
   })
   describe('fetchElement', () => {
     let proxyApi: FSXAProxyApi
-    const baseURL = Faker.internet.url()
+    const baseURL = faker.internet.url()
     beforeAll(() => {
       proxyApi = new FSXAProxyApi(baseURL, LogLevel.NONE)
     })
@@ -93,7 +93,7 @@ describe('FSXAProxyAPI', () => {
       }
     })
     it('should return the response', async () => {
-      const item = Faker.datatype.json()
+      const item = JSON.stringify(faker.helpers.fake("{{lorem.word}}"))
       const remoteApiResponse = {
         mappedItems: [item],
         referenceMap: {},
@@ -106,7 +106,7 @@ describe('FSXAProxyAPI', () => {
   })
   describe('fetchByFilter', () => {
     let proxyApi: FSXAProxyApi
-    const baseURL = Faker.internet.url()
+    const baseURL = faker.internet.url()
     const defaultFilters = [
       { value: '', operator: ComparisonQueryOperatorEnum.EQUALS, field: '' },
     ] as QueryBuilderQuery[]
@@ -171,7 +171,7 @@ describe('FSXAProxyAPI', () => {
       await proxyApi.fetchByFilter({
         filters: defaultFilters,
         locale,
-        pagesize: Faker.datatype.number(0),
+        pagesize: faker.number.int(0),
       })
 
       const actualBody = JSON.parse(fetchMock.mock.calls[0][1]?.body as string)
@@ -183,7 +183,7 @@ describe('FSXAProxyAPI', () => {
       await proxyApi.fetchByFilter({
         filters: defaultFilters,
         locale,
-        page: Faker.datatype.number(0),
+        page: faker.number.int(0),
       })
 
       const actualBody = JSON.parse(fetchMock.mock.calls[0][1]?.body as string)
@@ -216,7 +216,7 @@ describe('FSXAProxyAPI', () => {
     })
 
     it('should return the response', async () => {
-      const items = Faker.datatype.array() as any
+      const items = faker.helpers.multiple(() => faker.lorem.word()) as any
       const expectedResponse: FetchResponse = {
         page: 1,
         pagesize: 30,
@@ -234,7 +234,7 @@ describe('FSXAProxyAPI', () => {
   })
   describe('fetchNavigation', () => {
     let proxyApi: FSXAProxyApi
-    const baseURL = Faker.internet.url()
+    const baseURL = faker.internet.url()
     const initialPath = '/'
     beforeAll(() => {
       proxyApi = new FSXAProxyApi(baseURL, LogLevel.NONE)
@@ -269,7 +269,7 @@ describe('FSXAProxyAPI', () => {
       }
     })
     it('should return the response', async () => {
-      const expectedResponse = Faker.datatype.json()
+      const expectedResponse = JSON.stringify(faker.helpers.fake("{{lorem.word}}"))
       fetchMock.mockResponseOnce(JSON.stringify(expectedResponse))
 
       const actualResponse = await proxyApi.fetchNavigation({
@@ -281,7 +281,7 @@ describe('FSXAProxyAPI', () => {
   })
   describe('fetchProjectProperties', () => {
     let proxyApi: FSXAProxyApi
-    const baseURL = Faker.internet.url()
+    const baseURL = faker.internet.url()
     beforeAll(() => {
       proxyApi = new FSXAProxyApi(baseURL, LogLevel.NONE)
     })
@@ -333,7 +333,7 @@ describe('FSXAProxyAPI', () => {
       }
     })
     it.skip('should return the response', async () => {
-      const expectedResponse = Faker.datatype.json() // --> Would need to be NormalizedProjectPropertyResponse to fix this test
+      const expectedResponse = JSON.stringify(faker.helpers.fake("{{lorem.word}}")) // --> Would need to be NormalizedProjectPropertyResponse to fix this test
       fetchMock.mockResponseOnce(JSON.stringify(expectedResponse))
 
       const actualResponse = await proxyApi.fetchProjectProperties({ locale })
