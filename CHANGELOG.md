@@ -1,3 +1,98 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [12.0.0](///compare/v10.24.0...v12.0.0) (2025-12-11)
+
+### ⚠ BREAKING CHANGES
+
+* * Reduced the default maximum reference depth from 10 to 2.
+* This change aims to optimize performance and reduce complexity in handling referenced items.
+
+* chore(package): 🔧 update package names and repository URLs
+
+* Changed package names to include the scope `@spirit-wiegmann`.
+* Updated repository URLs to reflect the new organization.
+* Modified descriptions to indicate the packages are test forks.
+
+* chore(package): 🔧 update package names and repository URLs
+
+* Changed package names from `@spirit-wiegmann` to `@mrj-cp`.
+* Updated repository URLs to reflect the new organization.
+
+* chore(tests): 🔧 update Faker to @faker-js/faker
+
+* Replaced `Faker` with `@faker-js/faker` in test files.
+* Updated UUID generation to use `faker.string.uuid()` for consistency.
+
+* chore(tests): 🔧 update integration tests to use `INTEGRATION_TEST_TENANT_ID`
+
+* Refactored tests to utilize `INTEGRATION_TEST_TENANT_ID` from environment variables.
+* Added `closeServer` utility to ensure proper server shutdown in tests.
+* Updated server start function to accept a port parameter for flexibility.
+
+* chore(node): 🔧 update Node.js version to 24.x in CI configurations
+
+* Updated Node.js version from 20.x to 24.x in `integration-tests.yml`, `release.yml`, and `validation.yml`.
+* Added NPM authentication setup for publishing in `validation.yml`.
+* Configured `.release-it.json` to skip checks during publishing.
+
+* feat!: breaking API change
+
+* chore(release): 🔧 update checkout action to use fetch-depth and ref
+
+* Updated `release.yml` and `validation.yml` to set `fetch-depth: 0` and `ref: ${{ github.ref }}` for the checkout action.
+* This change ensures that the full history is fetched and the correct reference is checked out during CI workflows.
+
+* chore(validation): 🔧 update checkout action to use `github.head_ref`
+
+* Changed the `ref` parameter in the checkout action to use `github.head_ref` for better compatibility with pull requests.
+* This ensures that the correct branch is checked out during CI workflows.
+
+* chore(release): 🔧 configure npm authentication for releases
+
+* Added npm registry URL to the setup-node action.
+* Configured npm authentication using the NPM_TOKEN secret for secure access during the release process.
+
+* chore(release): 🔧 update release configuration for npm authentication
+
+* Added `GITHUB_TOKEN` to the environment variables in `release.yml` for improved authentication during releases.
+* Removed redundant `version` script from `package.json` to streamline the publishing process.
+
+* chore(release): 🔧 update release scripts to use `release-it`
+
+* Changed the release command from `npm run semantic-release` to `npm run release`.
+* Updated dry run command to `npm run release:dry-run`.
+* Added `release-it` configuration in `package.json` for streamlined release management.
+
+* chore(package): 🔧 update Node.js engine version specification
+
+* Ensured compatibility with Node.js version 14.0.0 and above.
+* No functional changes were made to the application.
+
+* chore(release): 🔧 add release-it configuration and CI script
+
+* Introduced `.release-it.json` for release management.
+* Updated `package.json` to include `release:ci` script for CI environments.
+* Enhanced hooks in `.release-it.json` for better build and release processes.
+
+* chore(release): 🔧 update release-it configuration for improved workflow
+
+* Refactored `.release-it.json` to enhance hook formatting and readability.
+* Simplified `release` and `release:ci` scripts in `package.json` for clarity.
+* Ensured consistency in workspace and version update configurations.
+
+* chore(package): 🔧 remove unused `postpublish` script from package.json
+
+* Cleaned up the `scripts` section in `package.json` by removing the `postpublish` script, which was not necessary for the current workflow.
+
+* chore(release): 🔧 remove unused `@release-it/bumper` plugin
+
+* Removed the `@release-it/bumper` plugin from `.release-it.json` and `package.json` as it is no longer needed.
+* Updated the `package-lock.json` to reflect these changes.
+
+* Issue/px 334 node and dependencies update (#8) ec8fe2a, closes #8
+
 # [10.24.0](https://github.com/e-Spirit/javascript-content-api-library/compare/v10.23.0...v10.24.0) (2025-09-22)
 
 
