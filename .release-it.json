@@ -18,15 +18,20 @@
     "skipChecks": true
   },
   "hooks": {
-    "before:init": ["npm run test"],
+    "before:init": [
+      "npm run test"
+    ],
     "after:bump": [
-      "npm run build",
+      "npm run build"
     ],
     "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
   },
   "plugins": {
     "@release-it/bumper": {
-      "out": ["package.json", "proxy/package.json"]
+      "out": [
+        "package.json",
+        "proxy/package.json"
+      ]
     },
     "@release-it/conventional-changelog": {
       "preset": "conventionalcommits",
@@ -35,10 +40,14 @@
       "ignoreRecommendedBump": false
     },
     "@release-it-plugins/workspaces": {
-      "workspaces": ["proxy"],
+      "workspaces": [
+        "proxy"
+      ],
       "publish": true,
       "additionalManifests": {
-        "versionUpdates": ["proxy/package.json"]
+        "versionUpdates": [
+          "proxy/package.json"
+        ]
       }
     }
   }
