@@ -20,7 +20,7 @@ import {
 import { CaasTestingClient } from './utils'
 import { TestDocument } from './types'
 import { Server } from 'http'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import {
   createRemotePageRefReference,
   createPageRef,
@@ -48,7 +48,7 @@ const startSever = (app: Express) =>
   })
 
 describe('FSXAProxyAPI', () => {
-  const randomProjectID = Faker.datatype.uuid()
+  const randomProjectID = faker.string.uuid()
   const tenantID = 'fsxa-api-integration-test'
 
   let caasClientProperties = {
@@ -101,7 +101,7 @@ describe('FSXAProxyAPI', () => {
       country: 'DE',
       language: 'de',
     }
-    const projectPropsId = Faker.datatype.uuid()
+    const projectPropsId = faker.string.uuid()
     afterEach(async () => {
       const res = await caasClient.getItem(projectPropsId, locale.identifier)
       const parsedRes = await res.json()
@@ -561,10 +561,10 @@ describe('FSXAProxyAPI', () => {
         ).toBe(dataset1.identifier)
       })
       it('api returns only matching data if filter is applied', async () => {
-        const a = Faker.datatype.uuid()
-        const b = Faker.datatype.uuid()
+        const a = faker.string.uuid()
+        const b = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: a,
           locale: {
             identifier,
@@ -573,7 +573,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: a,
           locale: {
             identifier,
@@ -582,7 +582,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: b,
           locale: {
             identifier,
@@ -609,9 +609,9 @@ describe('FSXAProxyAPI', () => {
         }
       })
       it('api returns sorted data if sort option is passed', async () => {
-        const filterProp = Faker.datatype.uuid()
+        const filterProp = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'B',
           locale: {
@@ -621,7 +621,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'A',
           locale: {
@@ -631,7 +631,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'C',
           locale: {
@@ -658,9 +658,9 @@ describe('FSXAProxyAPI', () => {
         expect(items[2]._id).toEqual(doc3._id + '.en_GB')
       })
       it('api returns descending sorted data if sort option with descend is passed', async () => {
-        const filterProp = Faker.datatype.uuid()
+        const filterProp = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'B',
           locale: {
@@ -670,7 +670,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'A',
           locale: {
@@ -680,7 +680,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'C',
           locale: {
@@ -707,9 +707,9 @@ describe('FSXAProxyAPI', () => {
         expect(items[2]._id).toEqual(doc2._id + '.en_GB')
       })
       it('api returns descending sorted data if sort option with special chars is passed', async () => {
-        const filterProp = Faker.datatype.uuid()
+        const filterProp = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           "sortPropWithSpecialChars *'();:@&=+$,/?%#[]": 'B',
           locale: {
@@ -719,7 +719,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           "sortPropWithSpecialChars *'();:@&=+$,/?%#[]": 'A',
           locale: {
@@ -729,7 +729,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           "sortPropWithSpecialChars *'();:@&=+$,/?%#[]": 'C',
           locale: {
@@ -756,9 +756,9 @@ describe('FSXAProxyAPI', () => {
         expect(items[2]._id).toEqual(doc3._id + '.en_GB')
       })
       it('api returns docs from page if page param & pagesize is passed', async () => {
-        const filterProp = Faker.datatype.uuid()
+        const filterProp = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'A',
           locale: {
@@ -768,7 +768,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'B',
           locale: {
@@ -778,7 +778,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'C',
           locale: {
@@ -809,7 +809,7 @@ describe('FSXAProxyAPI', () => {
       it('api returns matching data if simple regex matches', async () => {
         const regex = 'gray|grey'
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'gray',
           locale: {
             identifier,
@@ -818,7 +818,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'grey',
           locale: {
             identifier,
@@ -827,7 +827,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'green',
           locale: {
             identifier,
@@ -855,7 +855,7 @@ describe('FSXAProxyAPI', () => {
       it('api returns matching data if complex regex with special chars matches', async () => {
         const regex = '[!@#$%^&*(),.?"+:{}|<>]'
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'gray+',
           locale: {
             identifier,
@@ -864,7 +864,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'grey!',
           locale: {
             identifier,
@@ -873,7 +873,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'green',
           locale: {
             identifier,

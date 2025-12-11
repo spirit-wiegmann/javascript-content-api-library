@@ -7,7 +7,7 @@ import { FSXARemoteApi } from '../src/modules/FSXARemoteApi'
 import { ComparisonQueryOperatorEnum, LogicalQueryOperatorEnum } from '../src/modules/QueryBuilder'
 import { CaasTestingClient } from './utils'
 import { Server } from 'http'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { createDataset, createDatasetReference } from '../src/testutils'
 import { MapResponse } from '../src/modules'
 
@@ -24,7 +24,7 @@ const startSever = (app: Express) =>
   })
 
 describe('Access Control', () => {
-  const randomProjectID = Faker.datatype.uuid()
+  const randomProjectID = faker.string.uuid()
   const tenantID = 'fsxa-api-integration-test'
 
   const remoteApiBaseConfig = {

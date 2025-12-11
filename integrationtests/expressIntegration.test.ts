@@ -4,7 +4,7 @@ import cors from 'cors'
 import { Server } from 'http'
 import { CaasTestingClient } from './utils'
 import { FSXAApiErrors, FSXAContentMode, FSXARemoteApi, LogLevel } from '../src'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import expressIntegration from '../src/integrations/express'
 import {
   createDataset,
@@ -35,7 +35,7 @@ const startSever = (app: Express, port: number) =>
   })
 
 describe('express integration', () => {
-  const randomProjectID = Faker.datatype.uuid()
+  const randomProjectID = faker.string.uuid()
   const tenantID = 'fsxa-api-integration-test'
 
   const locale = {

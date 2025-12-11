@@ -14,7 +14,7 @@ import { default as expressIntegration } from '../src/integrations/express'
 import { FSXARemoteApi } from '../src/modules/FSXARemoteApi'
 import { CaasTestingClient } from './utils'
 import { Server } from 'http'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import {
   createDataset,
   createDatasetReference,
@@ -37,14 +37,14 @@ const startSever = (app: Express) =>
   })
 
 describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
-  const randomId1 = Faker.datatype.uuid()
+  const randomId1 = faker.string.uuid()
   const projectLocale = {
     identifier: 'de_DE',
     country: 'DE',
     language: 'de',
   }
   const tenantID = 'fsxa-api-integration-test'
-  const randomId2 = Faker.datatype.uuid()
+  const randomId2 = faker.string.uuid()
 
   let proxyAPI: FSXAProxyApi
   let server: Server
@@ -103,9 +103,9 @@ describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
     remoteProjectLocale: string,
     differentMediaIds: boolean
   ) {
-    const mediaId = Faker.datatype.uuid()
+    const mediaId = faker.string.uuid()
 
-    const remoteMediaId = differentMediaIds ? Faker.datatype.uuid() : mediaId
+    const remoteMediaId = differentMediaIds ? faker.string.uuid() : mediaId
 
     localMedia = createMediaPicture(mediaId, 'de_DE')
     localMedia.description = 'local media'
@@ -122,7 +122,7 @@ describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
     )
 
     // create dataset
-    const datasetId = Faker.datatype.uuid()
+    const datasetId = faker.string.uuid()
     dataset = createDataset(datasetId)
     const datasetReference = createDatasetReference(datasetId)
     remoteMedia.metaFormData = {
