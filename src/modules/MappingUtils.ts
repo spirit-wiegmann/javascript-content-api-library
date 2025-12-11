@@ -1,4 +1,27 @@
-import { set, get } from 'lodash'
+// Native get/set replacement
+const get = (obj: any, path: string | (string | number)[], defaultValue?: any): any => {
+  const keys = Array.isArray(path) ? path : path.split('.')
+  let result = obj
+  for (const key of keys) {
+    result = result?.[key]
+    if (result === undefined) return defaultValue
+  }
+  return result
+}
+
+const set = (obj: any, path: string | (string | number)[], value: any): any => {
+  const keys = Array.isArray(path) ? path : path.split('.')
+  const lastKey = keys.pop()!
+  let current = obj
+  for (const key of keys) {
+    if (!(key in current) || typeof current[key] !== 'object') {
+      current[key] = {}
+    }
+    current = current[key]
+  }
+  current[lastKey] = value
+  return obj
+}
 import { CaasApi_Item, Image, MappedCaasItem, NestedPath } from '../types'
 import { ResolvedReferencesInfo, ReferencedItemsInfo } from './CaaSMapper'
 import { Logger } from './Logger'

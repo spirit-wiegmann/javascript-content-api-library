@@ -1,18 +1,18 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { CaaSApi_ImageMapMedia } from '../types'
 import { createDataEntry } from './createDataEntry'
 
-export const createImageMapMedia = (id = faker.datatype.uuid()): CaaSApi_ImageMapMedia => {
+export const createImageMapMedia = (id = faker.string.uuid()): CaaSApi_ImageMapMedia => {
   const base = createDataEntry(id)
-  const name = faker.random.word()
+  const name = faker.lorem.word()
   return {
     ...base,
     fsType: 'Media',
     name,
     mediaType: 'PICTURE',
-    url: faker.random.word(),
+    url: faker.lorem.word(),
     pictureMetaData: {
-      fileSize: faker.datatype.number(),
+      fileSize: faker.number.int(),
       extension: 'jpeg',
       mimeType: 'image/jpeg',
       width: 4500,

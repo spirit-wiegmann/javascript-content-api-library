@@ -3,7 +3,15 @@
     "moduleResolution": "node",
     "target": "es5",
     "module": "CommonJS",
-    "lib": ["es2015", "es2016", "es2017", "dom", "ESNext"],
+    "lib": [
+      "es2015",
+      "es2016",
+      "es2017",
+      "es2022",
+      "ES2024",
+      "dom",
+      "ESNext"
+    ],
     "strict": true,
     "sourceMap": true,
     "declaration": true,
@@ -13,8 +21,19 @@
     "esModuleInterop": true,
     "outDir": "dist/lib",
     "declarationDir": "dist/types",
-    "resolveJsonModule": true,
-    "typeRoots": ["node_modules/@types"]
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "noEmitOnError": false,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
   },
-  "include": ["src", "integrationtests/**/*.ts"]
+  "include": [
+    "src",
+    "integrationtests/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }
