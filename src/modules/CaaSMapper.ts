@@ -69,7 +69,7 @@ export enum CaaSMapperErrors {
 }
 
 const REFERENCED_ITEMS_CHUNK_SIZE = 30
-export const DEFAULT_MAX_REFERENCE_DEPTH = 10
+export const DEFAULT_MAX_REFERENCE_DEPTH = 2
 
 export interface ReferencedItemsInfo {
   [identifier: string]: NestedPath[]
