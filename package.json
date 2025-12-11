@@ -44,7 +44,7 @@
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
     "release": "npm run release --workspaces && release-it",
-    "release:dry-run": "release-it --dry-run",
+    "release:ci": "npm run release:ci --workspaces && release-it --ci",
     "precommit": "lint-staged",
     "prepush": "jest --verbose ./src",
     "commitmsg": "commitlint -E HUSKY_GIT_PARAMS",

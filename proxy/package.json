@@ -15,7 +15,8 @@
     "package.json"
   ],
   "scripts": {
-    "release": "release-it"
+    "release": "release-it",
+    "release:ci": "release-it --ci"
   },
   "repository": {
     "type": "git",
@@ -27,8 +28,5 @@
   },
   "engines": {
     "node": ">=14.0.0"
-  },
-  "release-it": {
-    "git": false
   }
 }
