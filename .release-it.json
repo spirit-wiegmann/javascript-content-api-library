@@ -3,7 +3,7 @@
     "commitMessage": "chore(release): ${version} [skip ci]\n\n${changelog}",
     "tagName": "v${version}",
     "requireCleanWorkingDir": false,
-    "requireBranch": "master",
+    "requireBranch": false,
     "commit": true,
     "tag": true,
     "push": true
