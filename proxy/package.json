@@ -1,5 +1,5 @@
 {
-  "name": "@spirit-wiegmann/fsxa-proxy-api",
+  "name": "@mrj-cp/fsxa-proxy-api",
   "version": "10.20.0",
   "description": "[TEST FORK] This package represents the proxy version of the JavaScript Content API Library, running on the client side.",
   "main": "dist/fsxa-proxy-api.cjs.js",
@@ -16,7 +16,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/spirit-wiegmann/javascript-content-api-library"
+    "url": "https://github.com/mrj-cp/javascript-content-api-library"
   },
   "license": "Apache-2.0",
   "engines": {
