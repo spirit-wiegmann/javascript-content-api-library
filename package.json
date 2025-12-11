@@ -21,6 +21,9 @@
     "url": "https://github.com/mrj-cp/javascript-content-api-library"
   },
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=14.0.0"
   },
@@ -40,8 +43,8 @@
     "deploy-docs": "ts-node tools/gh-pages-publish",
     "report-coverage": "cat ./coverage/lcov.info | coveralls",
     "commit": "git-cz",
-    "semantic-release": "release-it",
-    "semantic-release:dry-run": "release-it --dry-run",
+    "release": "npm run release --workspaces && release-it",
+    "release:dry-run": "release-it --dry-run",
     "precommit": "lint-staged",
     "prepush": "jest --verbose ./src",
     "commitmsg": "commitlint -E HUSKY_GIT_PARAMS",
@@ -105,6 +108,7 @@
     "@commitlint/config-conventional": "^20.0.0",
     "@faker-js/faker": "^9.3.0",
     "@release-it-plugins/workspaces": "^5.0.3",
+    "@release-it/bumper": "^7.0.5",
     "@release-it/conventional-changelog": "^10.0.2",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.5",

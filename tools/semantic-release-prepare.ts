@@ -19,8 +19,8 @@ console.log()
 
 if (pkg.repository.url.trim()) {
   console.log(colors.cyan('Now run:'))
-  console.log(colors.cyan('  npm install -g semantic-release-cli'))
-  console.log(colors.cyan('  semantic-release-cli setup'))
+  console.log(colors.cyan('  npm install -g release-cli'))
+  console.log(colors.cyan('  release-cli setup'))
   console.log()
   console.log(colors.cyan('Important! Answer NO to "Generate travis.yml" question'))
   console.log()
@@ -30,8 +30,8 @@ if (pkg.repository.url.trim()) {
 } else {
   console.log(colors.red('First you need to set the "repository.url" property in package.json'))
   console.log(colors.cyan('Then run:'))
-  console.log(colors.cyan('  npm install -g semantic-release-cli'))
-  console.log(colors.cyan('  semantic-release-cli setup'))
+  console.log(colors.cyan('  npm install -g release-cli'))
+  console.log(colors.cyan('  release-cli setup'))
   console.log()
   console.log(colors.cyan('Important! Answer NO to "Generate travis.yml" question'))
 }
