@@ -211,7 +211,9 @@ describe('Express-Integration', () => {
         await (
           await fetch(`http://localhost:${PORT}/navigation`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+            },
             body: JSON.stringify({}),
           })
         ).json()

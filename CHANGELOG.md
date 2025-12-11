@@ -1,3 +1,17 @@
+# [10.24.0](https://github.com/e-Spirit/javascript-content-api-library/compare/v10.23.0...v10.24.0) (2025-09-22)
+
+
+### Features
+
+* **QueryBuilder:** Make regex validation filter optional ([#227](https://github.com/e-Spirit/javascript-content-api-library/issues/227)) ([5937e64](https://github.com/e-Spirit/javascript-content-api-library/commit/5937e649395445873af882e6acd65e5fad063de7))
+
+# [10.23.0](https://github.com/e-Spirit/javascript-content-api-library/compare/v10.22.3...v10.23.0) (2025-06-05)
+
+
+### Features
+
+* **express:** Support express5 ([fb6fd22](https://github.com/e-Spirit/javascript-content-api-library/commit/fb6fd2235281e443b71c662ba0ce47cffbaefba9))
+
 ## [10.22.3](https://github.com/e-Spirit/fsxa-api/compare/v10.22.2...v10.22.3) (2025-01-28)
 
 
