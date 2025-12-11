@@ -7,12 +7,12 @@ import { createDataset, createDatasetReference } from '../src/testutils/createDa
 
 dotenv.config({ path: './integrationtests/.env' })
 
-const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS } = process.env
+const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS, INTEGRATION_TEST_TENANT_ID } = process.env
 
 describe('FSXARemoteApi', () => {
   let caasClient: CaasTestingClient
   const randomProjectID = faker.string.uuid()
-  const tenantID = 'fsxa-api-integration-test'
+  const tenantID = INTEGRATION_TEST_TENANT_ID || 'fsxa-api-integration-test'
   const locale = {
     identifier: 'de_DE',
     country: 'DE',

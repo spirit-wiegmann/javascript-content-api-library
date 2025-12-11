@@ -12,7 +12,7 @@ import {
 } from '../src'
 import { default as expressIntegration } from '../src/integrations/express'
 import { FSXARemoteApi } from '../src/modules/FSXARemoteApi'
-import { CaasTestingClient } from './utils'
+import { CaasTestingClient, closeServer } from './utils'
 import { Server } from 'http'
 import { faker } from '@faker-js/faker'
 import {
@@ -26,7 +26,7 @@ import {
 
 dotenv.config({ path: './integrationtests/.env' })
 
-const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS } = process.env
+const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS, INTEGRATION_TEST_TENANT_ID } = process.env
 
 // promisify server start so we can await it in jest
 const startSever = (app: Express) =>
@@ -43,7 +43,7 @@ describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
     country: 'DE',
     language: 'de',
   }
-  const tenantID = 'fsxa-api-integration-test'
+  const tenantID = INTEGRATION_TEST_TENANT_ID || 'fsxa-api-integration-test'
   const randomId2 = faker.string.uuid()
 
   let proxyAPI: FSXAProxyApi
@@ -73,6 +73,7 @@ describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
       },
       logLevel: LogLevel.INFO,
       enableEventStream: false,
+      maxReferenceDepth: 10,
     })
 
     const app = express()
@@ -160,7 +161,7 @@ describe('FSXAProxyAPIRemoteProjects should resolve references', () => {
         await caasClient.removeRemoteCollection(parsedRes2._etag.$oid)
       }
     } finally {
-      server.close()
+      await closeServer(server)
     }
   })
 

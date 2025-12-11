@@ -10,7 +10,7 @@ const get = (obj: any, path: string | (string | number)[], defaultValue?: any): 
 }
 
 const set = (obj: any, path: string | (string | number)[], value: any): any => {
-  const keys = Array.isArray(path) ? path : path.split('.')
+  const keys = Array.isArray(path) ? [...path] : path.split('.')  // Copy array to avoid mutation
   const lastKey = keys.pop()!
   let current = obj
   for (const key of keys) {
