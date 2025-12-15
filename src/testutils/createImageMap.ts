@@ -5,19 +5,19 @@ import {
   CaaSApi_ImageMapAreaRect,
   Point2D,
 } from '../types'
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { ImageMapAreaType } from '../enums'
 import { createMediaPictureReferenceValue } from './createDataEntry'
 
 export function createImageMap(): CaaSApi_CMSImageMap {
   const media = createMediaPictureReferenceValue()
   const createPoint2D = (): Point2D => ({
-    x: faker.datatype.number(5),
-    y: faker.datatype.number(5),
+    x: faker.number.int(5),
+    y: faker.number.int(5),
   })
 
   return {
-    name: faker.random.word(),
+    name: faker.lorem.word(),
     fsType: 'CMS_INPUT_IMAGEMAP',
     value: {
       fsType: 'MappingMedium',
@@ -30,7 +30,7 @@ export function createImageMap(): CaaSApi_CMSImageMap {
             template: {},
           },
           areaType: ImageMapAreaType.CIRCLE,
-          radius: faker.datatype.number(5),
+          radius: faker.number.int(5),
           center: createPoint2D(),
         } as CaaSApi_ImageMapAreaCircle,
         {
@@ -55,7 +55,7 @@ export function createImageMap(): CaaSApi_CMSImageMap {
       ],
       resolution: {
         fsType: 'Resolution',
-        uid: faker.datatype.uuid(),
+        uid: faker.string.uuid(),
         width: 1920,
         height: 1080,
       },

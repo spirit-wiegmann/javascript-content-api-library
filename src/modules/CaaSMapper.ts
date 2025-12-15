@@ -50,7 +50,13 @@ import {
   Section,
 } from '../types'
 import { parseISO } from 'date-fns'
-import { chunk } from 'lodash'
+const chunk = <T>(array: T[], size: number): T[][] => {
+  const chunks: T[][] = []
+  for (let i = 0; i < array.length; i += size) {
+    chunks.push(array.slice(i, i + size))
+  }
+  return chunks
+}
 import XMLParser from './XMLParser'
 import { Logger, LogLevel } from './Logger'
 import { FSXARemoteApi } from './FSXARemoteApi'
@@ -63,7 +69,7 @@ export enum CaaSMapperErrors {
 }
 
 const REFERENCED_ITEMS_CHUNK_SIZE = 30
-export const DEFAULT_MAX_REFERENCE_DEPTH = 10
+export const DEFAULT_MAX_REFERENCE_DEPTH = 2
 
 export interface ReferencedItemsInfo {
   [identifier: string]: NestedPath[]

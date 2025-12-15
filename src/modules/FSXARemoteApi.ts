@@ -884,7 +884,7 @@ export class FSXARemoteApi implements FSXAApi {
     const result: Record<string, any> = {}
     Object.keys(params).forEach((key) => {
       if (Array.isArray(params[key])) {
-        result[key] = params[key].map(JSON.stringify)
+        result[key] = params[key].map((value) => JSON.stringify(value))
       } else if (typeof params[key] === 'object') {
         result[key] = JSON.stringify(params[key])
       } else {

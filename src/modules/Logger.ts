@@ -1,4 +1,4 @@
-import type { Chalk } from 'chalk'
+import Chalk from 'chalk'
 import { inspect } from 'util'
 
 export enum LogLevel {
@@ -48,9 +48,9 @@ const identity = (text: string) => text
 export class Logger {
   private _logLevel: LogLevel
   private _name: string
-  private chalk: Chalk | undefined
+  private chalk: typeof Chalk | undefined
 
-  constructor(logLevel: LogLevel, name: string, chalk?: Chalk) {
+  constructor(logLevel: LogLevel, name: string, chalk?: typeof Chalk) {
     this._logLevel = logLevel
     this._name = name
     this.chalk = chalk

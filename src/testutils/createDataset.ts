@@ -1,4 +1,4 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { CaaSApi_Dataset, CaaSApi_FSDataset } from '../types'
 import { createDataEntry } from './createDataEntry'
 
@@ -33,7 +33,7 @@ export const createDataset = (id?: string): CaaSApi_Dataset => {
 export const createDatasetReference = (id?: string): CaaSApi_FSDataset => {
   const base = createDataEntry(id)
   return {
-    name: faker.random.word(),
+    name: faker.lorem.word(),
     value: {
       fsType: 'DatasetReference',
       target: {

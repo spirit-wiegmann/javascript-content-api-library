@@ -1,10 +1,10 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { CaaSApi_GCAPage } from '../types'
 import { createDataEntry } from './createDataEntry'
 
 export const createGCAPage = (): CaaSApi_GCAPage => {
   const base = createDataEntry()
-  const name = faker.random.word()
+  const name = faker.lorem.word()
   const template = createDataEntry()
 
   return {

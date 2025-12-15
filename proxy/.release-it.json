@@ -1,0 +1,10 @@
+{
+  "git": false,
+  "npm": {
+    "publish": true,
+    "skipChecks": true
+  },
+  "hooks": {
+    "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
+  }
+}

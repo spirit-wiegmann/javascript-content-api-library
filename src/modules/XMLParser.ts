@@ -1,7 +1,16 @@
 import { Logger } from './Logger'
 import * as saxes from 'saxes'
 import { RichTextElement } from '../types'
-import { get } from 'lodash'
+// Native get replacement
+const get = (obj: any, path: string | string[], defaultValue?: any): any => {
+  const keys = Array.isArray(path) ? path : path.split('.')
+  let result = obj
+  for (const key of keys) {
+    result = result?.[key]
+    if (result === undefined) return defaultValue
+  }
+  return result
+}
 import { replaceUnnestedLinkTemplatesWithOneLinkElement } from '../utils'
 
 // map characters which are not valid inside XML attributes enclosed in double quotes to their

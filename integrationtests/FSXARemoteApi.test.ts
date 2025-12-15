@@ -2,17 +2,17 @@ import dotenv from 'dotenv'
 import { ComparisonQueryOperatorEnum, FSXAContentMode, LogLevel } from '../src'
 import { FSXARemoteApi } from '../src/modules/FSXARemoteApi'
 import { CaasTestingClient } from './utils'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { createDataset, createDatasetReference } from '../src/testutils/createDataset'
 
 dotenv.config({ path: './integrationtests/.env' })
 
-const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS } = process.env
+const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS, INTEGRATION_TEST_TENANT_ID } = process.env
 
 describe('FSXARemoteApi', () => {
   let caasClient: CaasTestingClient
-  const randomProjectID = Faker.datatype.uuid()
-  const tenantID = 'fsxa-api-integration-test'
+  const randomProjectID = faker.string.uuid()
+  const tenantID = INTEGRATION_TEST_TENANT_ID || 'fsxa-api-integration-test'
   const locale = {
     identifier: 'de_DE',
     country: 'DE',

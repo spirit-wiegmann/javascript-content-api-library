@@ -9,7 +9,7 @@ import {
   FetchElementRouteBody,
   FetchProjectPropertiesBody,
 } from '../routes'
-import { FSXARemoteApi, Logger, eventStreamHandler } from './../modules'
+import { FSXARemoteApi, Logger } from '../modules'
 import { QueryBuilderQuery } from '../types'
 import { FSXAProxyRoutes } from '../enums'
 
@@ -134,9 +134,13 @@ function getExpressRouter({ api }: GetExpressRouterContext) {
   )
 
   if (api.enableEventStream()) {
+    // Lazy-load eventStreamHandler to avoid bundling better-sse in browser builds
     router.get(
       [STREAM_CHANGE_EVENTS_ROUTE, FSXAProxyRoutes.STREAM_CHANGE_EVENTS_ROUTE],
-      eventStreamHandler(api)
+      async (req, res) => {
+        const { eventStreamHandler } = await import('../modules/CaaSEventStream')
+        return eventStreamHandler(api)(req, res)
+      }
     )
   }
 

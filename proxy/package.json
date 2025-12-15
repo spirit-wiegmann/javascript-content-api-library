@@ -5,20 +5,28 @@
   "main": "dist/fsxa-proxy-api.cjs.js",
   "module": "dist/fsxa-proxy-api.es5.js",
   "types": "dist/types",
-  "author": "Justin Wiegmann <justin.wiegmann@crownpeak.com>",
+  "author": "Tobias Golbs <golbs@e-spirit.com>",
   "contributors": [
-    "Justin Wiegmann <justin.wiegmann@crownpeak.com>",
-    "Nicolai McAlley <nicolai.mcalley@crownpeak.com>"
+    "Dominik Barczewski <barczewski@e-spirit.com>",
+    "Nicolai Henczi <henczi@e-spirit.com>",
+    "Jaswin Schütz <jschuetz@e-spirit.com>"
   ],
   "files": [
     "dist",
     "package.json"
   ],
+  "scripts": {
+    "release": "release-it",
+    "release:ci": "release-it --ci"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/e-Spirit/javascript-content-api-library"
   },
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
     "node": ">=14.0.0"
   }

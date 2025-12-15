@@ -17,10 +17,10 @@ import {
   ComparisonQueryOperatorEnum,
   EvaluationQueryOperatorEnum,
 } from '../src/modules/QueryBuilder'
-import { CaasTestingClient } from './utils'
+import { CaasTestingClient, closeServer } from './utils'
 import { TestDocument } from './types'
 import { Server } from 'http'
-import Faker from 'faker'
+import { faker } from '@faker-js/faker'
 import {
   createRemotePageRefReference,
   createPageRef,
@@ -37,19 +37,19 @@ import {
 
 dotenv.config({ path: './integrationtests/.env' })
 
-const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS } = process.env
+const { INTEGRATION_TEST_API_KEY, INTEGRATION_TEST_CAAS, INTEGRATION_TEST_TENANT_ID } = process.env
 
 // promisify server start so we can await it in jest
-const startSever = (app: Express) =>
+const startSever = (app: Express, port: number = 3002) =>
   new Promise<Server>((resolve) => {
-    const server = app.listen(3002, async () => {
+    const server = app.listen(port, async () => {
       resolve(server)
     })
   })
 
 describe('FSXAProxyAPI', () => {
-  const randomProjectID = Faker.datatype.uuid()
-  const tenantID = 'fsxa-api-integration-test'
+  const randomProjectID = faker.string.uuid()
+  const tenantID = INTEGRATION_TEST_TENANT_ID || 'fsxa-api-integration-test'
 
   let caasClientProperties = {
     apikey: INTEGRATION_TEST_API_KEY!,
@@ -92,7 +92,7 @@ describe('FSXAProxyAPI', () => {
     const res = await caasClient.getCollection()
     const parsedRes = await res.json()
     await caasClient.removeCollection(parsedRes._etag.$oid)
-    server.close()
+    await closeServer(server)
   })
 
   describe('fetchProjectProps', () => {
@@ -101,7 +101,7 @@ describe('FSXAProxyAPI', () => {
       country: 'DE',
       language: 'de',
     }
-    const projectPropsId = Faker.datatype.uuid()
+    const projectPropsId = faker.string.uuid()
     afterEach(async () => {
       const res = await caasClient.getItem(projectPropsId, locale.identifier)
       const parsedRes = await res.json()
@@ -316,6 +316,26 @@ describe('FSXAProxyAPI', () => {
       ])
     })
     it('items with circular references get resolved', async () => {
+      // This test requires a higher maxReferenceDepth (chain: pageRef → ds1 → ds2 → ds3 → ds1)
+      // Create a temporary server with higher depth for this test
+      const deepRemoteApi = new FSXARemoteApi({
+        apikey: INTEGRATION_TEST_API_KEY!,
+        caasURL: INTEGRATION_TEST_CAAS!,
+        contentMode: FSXAContentMode.PREVIEW,
+        navigationServiceURL: 'https://your-navigationservice.e-spirit.cloud/navigation'!,
+        projectID: randomProjectID,
+        tenantID: tenantID,
+        remotes: {},
+        logLevel: LogLevel.INFO,
+        enableEventStream: false,
+        maxReferenceDepth: 10,
+      })
+      const deepApp = express()
+      deepApp.use(cors())
+      deepApp.use('/api', expressIntegration({ api: deepRemoteApi }))
+      const deepServer = await startSever(deepApp, 3003)
+      const deepProxyAPI = new FSXAProxyApi('http://localhost:3003/api', LogLevel.INFO)
+
       const dataset1 = createDataset('ds1-id')
       const datasetReference1 = createDatasetReference('ds1-id')
       const dataset2 = createDataset('ds2-id')
@@ -335,19 +355,23 @@ describe('FSXAProxyAPI', () => {
         locale
       )
 
-      const res = await proxyAPI.fetchElement({
-        id: pageRef.identifier,
-        locale: `${locale.language}_${locale.country}`,
-      })
+      try {
+        const res = await deepProxyAPI.fetchElement({
+          id: pageRef.identifier,
+          locale: `${locale.language}_${locale.country}`,
+        })
 
-      expect(res.data.dataset.id).toBe(dataset1.identifier)
-      expect(res.data.dataset.data.ref22.id).toBe(dataset2.identifier)
-      expect(res.data.dataset.data.ref22.data.ref23.id).toBe(
-        dataset3.identifier
-      )
-      expect(res.data.dataset.data.ref22.data.ref23.data.ref21.id).toBe(
-        dataset1.identifier
-      )
+        expect(res.data.dataset.id).toBe(dataset1.identifier)
+        expect(res.data.dataset.data.ref22.id).toBe(dataset2.identifier)
+        expect(res.data.dataset.data.ref22.data.ref23.id).toBe(
+          dataset3.identifier
+        )
+        expect(res.data.dataset.data.ref22.data.ref23.data.ref21.id).toBe(
+          dataset1.identifier
+        )
+      } finally {
+        await closeServer(deepServer)
+      }
     })
     it('api returns resolved references if references are nested', async () => {
       const mediaPicture = createMediaPicture('pic-id')
@@ -515,6 +539,26 @@ describe('FSXAProxyAPI', () => {
     const identifier = 'EN'
     describe('filter with EQUALS operator', () => {
       it('items with circular references get resolved', async () => {
+        // This test requires a higher maxReferenceDepth (chain: pageRef → ds1 → ds2 → ds3 → ds1)
+        // Create a temporary server with higher depth for this test
+        const deepRemoteApi = new FSXARemoteApi({
+          apikey: INTEGRATION_TEST_API_KEY!,
+          caasURL: INTEGRATION_TEST_CAAS!,
+          contentMode: FSXAContentMode.PREVIEW,
+          navigationServiceURL: 'https://your-navigationservice.e-spirit.cloud/navigation'!,
+          projectID: randomProjectID,
+          tenantID: tenantID,
+          remotes: {},
+          logLevel: LogLevel.INFO,
+          enableEventStream: false,
+          maxReferenceDepth: 10,
+        })
+        const deepApp = express()
+        deepApp.use(cors())
+        deepApp.use('/api', expressIntegration({ api: deepRemoteApi }))
+        const deepServer = await startSever(deepApp, 3004)
+        const deepProxyAPI = new FSXAProxyApi('http://localhost:3004/api', LogLevel.INFO)
+
         const locale = {
           identifier: 'de_DE',
           country: 'DE',
@@ -539,32 +583,36 @@ describe('FSXAProxyAPI', () => {
           locale
         )
 
-        const res = await proxyAPI.fetchByFilter({
-          filters: [
-            {
-              field: 'identifier',
-              operator: ComparisonQueryOperatorEnum.EQUALS,
-              value: pageRef.identifier,
-            },
-          ],
-          locale: locale.identifier,
-        })
-        expect((res.items[0] as any).data.dataset.id).toBe(dataset1.identifier)
-        expect((res.items[0] as any).data.dataset.data.ref22.id).toBe(
-          dataset2.identifier
-        )
-        expect(
-          (res.items[0] as any).data.dataset.data.ref22.data.ref23.id
-        ).toBe(dataset3.identifier)
-        expect(
-          (res.items[0] as any).data.dataset.data.ref22.data.ref23.data.ref21.id
-        ).toBe(dataset1.identifier)
+        try {
+          const res = await deepProxyAPI.fetchByFilter({
+            filters: [
+              {
+                field: 'identifier',
+                operator: ComparisonQueryOperatorEnum.EQUALS,
+                value: pageRef.identifier,
+              },
+            ],
+            locale: locale.identifier,
+          })
+          expect((res.items[0] as any).data.dataset.id).toBe(dataset1.identifier)
+          expect((res.items[0] as any).data.dataset.data.ref22.id).toBe(
+            dataset2.identifier
+          )
+          expect(
+            (res.items[0] as any).data.dataset.data.ref22.data.ref23.id
+          ).toBe(dataset3.identifier)
+          expect(
+            (res.items[0] as any).data.dataset.data.ref22.data.ref23.data.ref21.id
+          ).toBe(dataset1.identifier)
+        } finally {
+          await closeServer(deepServer)
+        }
       })
       it('api returns only matching data if filter is applied', async () => {
-        const a = Faker.datatype.uuid()
-        const b = Faker.datatype.uuid()
+        const a = faker.string.uuid()
+        const b = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: a,
           locale: {
             identifier,
@@ -573,7 +621,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: a,
           locale: {
             identifier,
@@ -582,7 +630,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: b,
           locale: {
             identifier,
@@ -609,9 +657,9 @@ describe('FSXAProxyAPI', () => {
         }
       })
       it('api returns sorted data if sort option is passed', async () => {
-        const filterProp = Faker.datatype.uuid()
+        const filterProp = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'B',
           locale: {
@@ -621,7 +669,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'A',
           locale: {
@@ -631,7 +679,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'C',
           locale: {
@@ -658,9 +706,9 @@ describe('FSXAProxyAPI', () => {
         expect(items[2]._id).toEqual(doc3._id + '.en_GB')
       })
       it('api returns descending sorted data if sort option with descend is passed', async () => {
-        const filterProp = Faker.datatype.uuid()
+        const filterProp = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'B',
           locale: {
@@ -670,7 +718,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'A',
           locale: {
@@ -680,7 +728,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'C',
           locale: {
@@ -707,9 +755,9 @@ describe('FSXAProxyAPI', () => {
         expect(items[2]._id).toEqual(doc2._id + '.en_GB')
       })
       it('api returns descending sorted data if sort option with special chars is passed', async () => {
-        const filterProp = Faker.datatype.uuid()
+        const filterProp = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           "sortPropWithSpecialChars *'();:@&=+$,/?%#[]": 'B',
           locale: {
@@ -719,7 +767,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           "sortPropWithSpecialChars *'();:@&=+$,/?%#[]": 'A',
           locale: {
@@ -729,7 +777,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           "sortPropWithSpecialChars *'();:@&=+$,/?%#[]": 'C',
           locale: {
@@ -756,9 +804,9 @@ describe('FSXAProxyAPI', () => {
         expect(items[2]._id).toEqual(doc3._id + '.en_GB')
       })
       it('api returns docs from page if page param & pagesize is passed', async () => {
-        const filterProp = Faker.datatype.uuid()
+        const filterProp = faker.string.uuid()
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'A',
           locale: {
@@ -768,7 +816,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'B',
           locale: {
@@ -778,7 +826,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: filterProp,
           sortProp: 'C',
           locale: {
@@ -809,7 +857,7 @@ describe('FSXAProxyAPI', () => {
       it('api returns matching data if simple regex matches', async () => {
         const regex = 'gray|grey'
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'gray',
           locale: {
             identifier,
@@ -818,7 +866,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'grey',
           locale: {
             identifier,
@@ -827,7 +875,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'green',
           locale: {
             identifier,
@@ -855,7 +903,7 @@ describe('FSXAProxyAPI', () => {
       it('api returns matching data if complex regex with special chars matches', async () => {
         const regex = '[!@#$%^&*(),.?"+:{}|<>]'
         const doc1: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'gray+',
           locale: {
             identifier,
@@ -864,7 +912,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc2: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'grey!',
           locale: {
             identifier,
@@ -873,7 +921,7 @@ describe('FSXAProxyAPI', () => {
           },
         }
         const doc3: TestDocument = {
-          _id: Faker.datatype.uuid(),
+          _id: faker.string.uuid(),
           filterProp: 'green',
           locale: {
             identifier,

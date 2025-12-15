@@ -1,13 +1,13 @@
-import faker from 'faker'
+import { faker } from '@faker-js/faker'
 import { CaaSApi_Media_Picture } from '../types'
 import { createDataEntry } from './createDataEntry'
 
 export const createMediaPicture = (
-  id = faker.datatype.uuid(),
-  locale = faker.random.locale()
+  id = faker.string.uuid(),
+  locale = faker.location.countryCode().toLowerCase()
 ): CaaSApi_Media_Picture => {
   const base = createDataEntry(id, locale)
-  const name = faker.random.word()
+  const name = faker.lorem.word()
   return {
     ...base,
     fsType: 'Media',

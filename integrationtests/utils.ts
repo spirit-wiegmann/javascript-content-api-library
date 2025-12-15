@@ -262,3 +262,20 @@ export class CaasTestingClient {
       : undefined
   }
 }
+
+/**
+ * Promisified server close that also terminates keep-alive connections.
+ * This is necessary because Node.js HTTP servers keep connections alive,
+ * which prevents Jest from exiting properly.
+ */
+export const closeServer = (server: import('http').Server): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    // Force close all connections by destroying the server socket
+    server.closeAllConnections?.()
+    
+    server.close((err) => {
+      if (err) reject(err)
+      else resolve()
+    })
+  })
+}
