@@ -1,14 +1,15 @@
 {
-  "name": "@mrj-cp/fsxa-proxy-api",
+  "name": "fsxa-proxy-api",
   "version": "10.20.0",
-  "description": "[TEST FORK] This package represents the proxy version of the JavaScript Content API Library, running on the client side.",
+  "description": "This package represents the proxy version of the JavaScript Content API Library, running on the client side.",
   "main": "dist/fsxa-proxy-api.cjs.js",
   "module": "dist/fsxa-proxy-api.es5.js",
   "types": "dist/types",
-  "author": "Justin Wiegmann <justin.wiegmann@crownpeak.com>",
+  "author": "Tobias Golbs <golbs@e-spirit.com>",
   "contributors": [
-    "Justin Wiegmann <justin.wiegmann@crownpeak.com>",
-    "Nicolai McAlley <nicolai.mcalley@crownpeak.com>"
+    "Dominik Barczewski <barczewski@e-spirit.com>",
+    "Nicolai Henczi <henczi@e-spirit.com>",
+    "Jaswin Schütz <jschuetz@e-spirit.com>"
   ],
   "files": [
     "dist",
@@ -20,7 +21,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mrj-cp/javascript-content-api-library"
+    "url": "https://github.com/e-Spirit/javascript-content-api-library"
   },
   "license": "Apache-2.0",
   "publishConfig": {

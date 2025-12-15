@@ -1,5 +1,5 @@
 {
-  "name": "@mrj-cp/fsxa-api",
+  "name": "fsxa-api",
   "version": "10.24.0",
   "description": "The JavaScript Content API Library a.k.a. Content API is an interface handling data coming from the FirstSpirit CaaS and the Navigation Service.",
   "keywords": [],
@@ -18,7 +18,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/mrj-cp/javascript-content-api-library"
+    "url": "https://github.com/e-Spirit/javascript-content-api-library"
   },
   "license": "Apache-2.0",
   "publishConfig": {
