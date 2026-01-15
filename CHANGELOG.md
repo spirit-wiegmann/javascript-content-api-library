@@ -1,3 +1,41 @@
+# Changelog
+
+All notable changes to this project will be documented in this file. See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
+
+## [12.0.0](https://github.com/spirit-wiegmann/javascript-content-api-library/compare/v10.24.0...v12.0.0) (2026-01-15)
+
+### ⚠ BREAKING CHANGES
+
+* **node-24:** - Update Node.js from 20.x to 24.x in all CI configurations
+- Reduce DEFAULT_MAX_REFERENCE_DEPTH from 10 to 2 for performance optimization
+- Replace semantic-release with release-it for release management
+
+Dependencies:
+- Replace `faker` with `@faker-js/faker` for better compatibility
+- Update various dev dependencies to latest minor/patch versions
+- Remove unused `@release-it/bumper` plugin
+
+CI/CD:
+- Add custom workspace publish and version sync scripts
+- Update checkout action to use `fetch-depth: 0` and proper refs
+- Configure npm authentication for releases
+- Enforce `fail-on-severity: moderate` in dependency review
+- Upgrade `dependency-review-action` to v4
+
+Code Refactoring:
+- Refactor `CaaSEventStream` to use lazy loading (prevents unnecessary bundling in browser builds)
+- Export `get` and `set` utilities from `MappingUtils.ts`
+- Update TypeScript configuration to exclude `node_modules`
+- Add `INTEGRATION_TEST_TENANT_ID` environment variable for integration tests
+
+Documentation:
+- Add migration guide for version 11.0.0 in CHANGELOG.md
+
+### Features
+
+* **node-24:** ⬆️ upgrade to Node.js 24, update dependencies, and migrate to release-it ([1579e3c](https://github.com/spirit-wiegmann/javascript-content-api-library/commit/1579e3cc1f6f1ff73e173da3dfe43084d00f136d))
+* **release:** 🏷️ rename packages to `@crownpeak/fsxa-publishing-test-api` and `@crownpeak/fsxa-publishing-test-proxy-api`, bump version to 11.0.0, and update CI workflow ([1796ec0](https://github.com/spirit-wiegmann/javascript-content-api-library/commit/1796ec052e1e290efc635897de2d1b14d79da58e))
+
 ## BREAKING CHANGES
 
 ### Migrating to v11.0.0
